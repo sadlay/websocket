@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <title>websocket</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/sockjs/1/sockjs.min.js"></script>
+    <!-- stomp.min.js下载地址 https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.min.js 该地址为文本，需要自行先下载-->
+    <script type="text/javascript" th:src="@{/stomp.min.js}"></script>
+    <script type="text/javascript">
+        var noticeSocket=function () {
+            //连接服务器端点
+            var s=new SockJS('/wsuser');
+            //客户端
+            var stompClient=Stomp.over(s);
+            stompClient.connect({},function () {
+                console.log('notice socket connected');
+                //订阅消息地址
+                //这里/user前缀是不能缺少的，它代表着订阅指定用户的消息
+                stompClient.subscribe('/user/queue/customer',function (data) {
+                    $('#receive').html(data.body);
+                });
+            });
+        };
+        noticeSocket();
+    </script>
+</head>
+<body>
+    <h1><span id="receive">等待接收消息</span></h1>
+</body>
+</html>
